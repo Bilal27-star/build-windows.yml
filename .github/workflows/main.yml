@@ -2,16 +2,11 @@ name: Build Windows Desktop App
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   build-windows:
     runs-on: windows-latest
-
-    defaults:
-      run:
-        working-directory: .
 
     steps:
       - name: Checkout repository
@@ -26,13 +21,22 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd $GITHUB_WORKSPACE
+          npm install
+        shell: bash
 
       - name: Build Next.js
-        run: npm run build
+        run: |
+          cd $GITHUB_WORKSPACE
+          npm run build
+        shell: bash
 
       - name: Build Tauri Windows App
-        run: npx tauri build
+        run: |
+          cd $GITHUB_WORKSPACE
+          npx tauri build
+        shell: bash
 
       - name: Upload Windows Installer
         uses: actions/upload-artifact@v4
